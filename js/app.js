@@ -179,7 +179,7 @@
     selectVow((i + VOWS.length) % VOWS.length, true);
   }
 
-  /* ── Music: on by default, starts on the first tap (browsers block sound before one) ── */
+  /* ── Music: plays muted from page load (browser-required), unmutes on the first tap ── */
   function fadeAudio(to, ms, done) {
     if (!audio) return;
     clearInterval(timers.fade);
@@ -192,6 +192,8 @@
   function startMusic(quiet) {
     if (!audio) return;
     audio.volume = 0;
+    audio.muted = false;
+    if (!audio.paused) { set({ music: true }); fadeAudio(0.8, 1500); dropGesture(); return; }
     var p = audio.play();
     var ok = function () { set({ music: true }); fadeAudio(0.8, 1500); dropGesture(); };
     if (p && p.then) p.then(ok).catch(function () { if (!quiet) flash('Tap the music button to play'); });
